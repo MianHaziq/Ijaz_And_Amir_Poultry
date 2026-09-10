@@ -74,7 +74,7 @@ export default function Header() {
               solid ? "" : "bg-white/85 px-3 py-1.5 backdrop-blur-md shadow-lg shadow-deep/10",
             ].join(" ")}
           >
-            <Logo compact={solid} />
+            <Logo compact={solid} priority />
           </span>
         </a>
 
