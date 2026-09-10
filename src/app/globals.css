@@ -13,6 +13,12 @@
   --color-forest: #115324;
   --color-green: #2f8f43;
   --color-leaf: #57a83c;
+
+  /* The greens above are surface and accent colours - as *text* over the
+     hero artwork neither survives: #57a83c manages only 2.97:1 against
+     pure white, so no scrim can save it. This is the one green dark
+     enough to set headline type in over the photograph. */
+  --color-green-strong: #0c5f2c;
   --color-lime: #9cbf5f;
 
   /* Gold accent from the logo underline / script flourish */

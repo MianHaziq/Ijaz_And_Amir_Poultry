@@ -60,6 +60,33 @@ appears once the visitor scrolls past the hero.
 
 ---
 
+## Hero legibility
+
+The hero sets dark type over a bright photograph, so contrast is a design
+constraint there, not an afterthought. Two things it is worth knowing before
+touching that section:
+
+* **`--color-leaf` and `--color-green` cannot be used for text over the
+  artwork.** `#57a83c` reaches only **2.97:1 against pure white**, so no scrim
+  can rescue it — it failed at 1.92:1 in place. `--color-green-strong`
+  (`#0c5f2c`) exists for exactly this: dark enough to set headline type in over
+  the photograph, still clearly the brand green. The greens above it stay what
+  they are, surface and accent colours.
+* **There are two washes, and they are not redundant.** The first is a
+  viewport-wide gradient from the left edge. The second is anchored to the copy
+  block itself — necessary because the copy is centred inside `.shell`
+  (`max-width: 82rem`) while the first wash is measured against the viewport,
+  so past roughly 2000px they drift apart and the copy slides out of the
+  protected zone. With both in place the headline holds ~7.3:1 and the body
+  ~10:1 from 768px to 3440px, near enough flat.
+
+The copy wash is sized `ellipse 50% 50% at 50% 50%`, which inscribes it in its
+box so it is already at zero alpha where it meets the edges. Left at the
+default corner sizing it still carries opacity there and draws a visible
+rectangle across the artwork.
+
+---
+
 ## Content source of truth
 
 Everything factual — phone numbers, email, address, proprietor, registration
