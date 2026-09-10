@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+/* ============================================================
+   IJAZ & AMIR POULTRY FARM — Brand Design System
+   Colours sampled directly from the client's banner artwork
+   and print material (letterhead / business card).
+   ============================================================ */
+
+@theme {
+  /* Core brand greens — #013E20 sampled from the banner wave */
+  --color-deep: #013e20;
+  --color-deep-soft: #04502a;
+  --color-forest: #115324;
+  --color-green: #2f8f43;
+  --color-leaf: #57a83c;
+  --color-lime: #9cbf5f;
+
+  /* Gold accent from the logo underline / script flourish */
+  --color-gold: #c9a227;
+  --color-gold-soft: #e3c05c;
+
+  /* Neutrals */
+  --color-cream: #f6f8f3;
+  --color-ink: #10241a;
+  --color-muted: #5b6b60;
+  --color-hairline: #e3e9e0;
+
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-script), ui-serif, cursive;
+
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: #ffffff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: var(--color-deep);
+    color: #fff;
+  }
+
+  /* Anchor offset so the sticky header never covers a section heading */
+  section[id] {
+    scroll-margin-top: 88px;
+  }
+}
+
+@layer components {
+  /* ---- Section rhythm: premium sites breathe ---- */
+  .shell {
+    width: 100%;
+    max-width: 82rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    .shell { padding-inline: 3rem; }
+  }
+
+  /* ---- Eyebrow label used above every section heading ---- */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-green);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-gold), var(--color-leaf));
+    border-radius: 2px;
+  }
+  .eyebrow-light { color: var(--color-lime); }
+
+  /* ---- The brand's gold hairline, used as a divider accent ---- */
+  .gold-rule {
+    height: 3px;
+    width: 4.5rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--color-gold), var(--color-gold-soft) 60%, transparent);
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+
+  /* Subtle paper texture for light sections — keeps large white areas alive */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* ============================================================
+   Scroll-reveal primitive
+   Elements start hidden and are released by an IntersectionObserver
+   that sets data-visible="true". Everything is a single, slow,
+   cinematic movement — no bouncing, no fast easing.
+   ============================================================ */
+
+[data-reveal] {
+  opacity: 0;
+  transition:
+    opacity 1s var(--ease-brand),
+    transform 1s var(--ease-brand);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+[data-reveal="up"]    { transform: translate3d(0, 34px, 0); }
+[data-reveal="down"]  { transform: translate3d(0, -24px, 0); }
+[data-reveal="left"]  { transform: translate3d(-38px, 0, 0); }
+[data-reveal="right"] { transform: translate3d(38px, 0, 0); }
+[data-reveal="scale"] { transform: scale(0.955); }
+
+/* NB: never hide an observed element with a zero-area clip-path. Its
+   intersection ratio would be 0, the observer could never fire, and the
+   element would stay hidden forever. Opacity and small transforms are safe. */
+
+[data-reveal][data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Ambient motion ---- */
+@keyframes kenburns {
+  from { transform: scale(1) translate3d(0, 0, 0); }
+  to   { transform: scale(1.075) translate3d(0, -1.2%, 0); }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(0, -18px, 0) rotate(4deg); }
+}
+
+.anim-kenburns { animation: kenburns 22s var(--ease-brand) forwards; }
+.anim-drift    { animation: drift 14s ease-in-out infinite; }
+
+/* ============================================================
+   Respect the user's motion preference — everything resolves
+   instantly to its final state, nothing is lost.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .anim-kenburns,
+  .anim-drift {
+    animation: none !important;
+  }
+
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
