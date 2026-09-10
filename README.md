@@ -34,6 +34,30 @@ Reusable classes: `.shell` (page gutter), `.eyebrow` (section label),
 
 ---
 
+## The logo
+
+`public/logo.png` is the client's own rooster-and-leaf mark, lifted off the flat
+white plate it was supplied on. Its counters — the rooster's face, the gaps
+between the leaves — are **transparent**, exactly as they are in the artwork, so:
+
+* on light surfaces (the header) the mark is placed bare;
+* on dark surfaces (the footer, the preloader) it is seated on the cream disc,
+  the way the business card always presents it. `<LogoMark plate />` does this.
+
+Anything else would let the background flood the rooster's face.
+
+`src/app/icon.png` and `src/app/apple-icon.png` are cut from the same file by
+Next's icon file convention — there is no `favicon.ico`. All three, plus the
+`logo` in the page's `LocalBusiness` structured data, trace back to that one
+asset.
+
+`Logo` sets the full lockup as the card does: mark, **IJAZ & AMIR**, spaced
+`POULTRY FARM`, the `HEALTHY BIRDS • BETTER TOMORROW` strap, and the green-to-gold
+rule that closes it. `compact` drops the last two for the condensed header that
+appears once the visitor scrolls past the hero.
+
+---
+
 ## Content source of truth
 
 Everything factual — phone numbers, email, address, proprietor, registration
@@ -90,6 +114,34 @@ document can never reach a ratio target.
 
 ---
 
+## Preloader
+
+`src/components/Preloader.tsx` is a brand curtain over the first paint. It is
+rendered server-side as the first thing in `<body>`, so there is no flash of an
+unstyled page before it appears.
+
+The progress is **real**: it tracks webfont readiness and the window `load`
+event, with an asymptotic creep in between so the bar keeps moving on a slow
+line without ever pretending to be finished. One `requestAnimationFrame` loop
+writes a single `--p` custom property (0-100) straight to the DOM — the ring,
+the bar and the readout all derive from that one number, and React re-renders
+only when the phase changes, not sixty times a second.
+
+It shows for at least 1.15s (0s if the visitor asks for reduced motion) and at
+most 5s, so a slow connection can never hold the site hostage. Then the curtain
+leaves upward on the brand wave — the same shape that separates every section
+below it.
+
+⚠️ The curtain and the scroll-reveals are coupled through `src/lib/appReady.ts`.
+Reveals do **not** start observing until the curtain lifts, otherwise every
+section inside the first viewport would play its entrance out of sight and be
+sitting still by the time it was uncovered. That module carries its own timeout
+failsafe: content held by a reveal is at `opacity: 0`, so if the preloader ever
+dies before reporting in, the page must release itself rather than stay blank.
+`<noscript>` in the layout neutralises both for the same reason.
+
+---
+
 ## Contact form
 
 There is **no mail service wired up**, so rather than fake a "message sent"
@@ -103,11 +155,10 @@ To move to a real backend later, replace the `submit` handler in
 
 ## Handover / still needed from the client
 
-1. **The official logo vector.** The header lockup reproduces the wordmark from
-   the letterhead, and `LogoMark` in `src/components/Logo.tsx` is a *simplified
-   vector interpretation* of the rooster-and-leaf mark. Drop the real file in as
-   `/public/logo.svg` and swap the `LogoMark` body for an `<img>` — nothing else
-   changes.
+1. **A vector of the mark.** The real mark is now in place, but as a raster
+   (`public/logo.png`, cut out of the supplied 1254px PNG). An `.svg` would stay
+   sharp at any size and weigh almost nothing — drop it in, point the import in
+   `src/components/Logo.tsx` at it, and regenerate the two app icons from it.
 2. **More farm photography.** Only the two banner crops exist, so the same scene
    carries the hero, the About frame and the cinematic band. Four or five real
    photos (sheds interior, feed handling, birds, staff at work) would remove the
