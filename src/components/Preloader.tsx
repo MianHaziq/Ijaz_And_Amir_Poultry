@@ -9,11 +9,24 @@ import { site } from "@/lib/site";
 /* Minimum so the entrance reads as intentional on a warm cache rather
    than as a flicker; maximum so a slow connection never holds the site
    hostage behind a curtain. */
-const MIN_VISIBLE_MS = 1150;
-const MAX_VISIBLE_MS = 5000;
+const MIN_VISIBLE_MS = 1500;
+const MAX_VISIBLE_MS = 5500;
+
+/* A beat on a completed ring before the curtain moves, so the two
+   readings don't collide. */
+const HOLD_MS = 260;
 
 /* Must match the .pl transition duration in globals.css. */
-const EXIT_MS = 1000;
+const EXIT_MS = 1200;
+
+/* Time constant of the glide toward the real figure. Expressed in
+   milliseconds rather than as a per-frame fraction so the pace is the
+   same on a 60Hz panel and a 120Hz one — a per-frame factor silently
+   runs twice as fast on the latter. */
+const GLIDE_MS = 200;
+
+/* How slowly the bar drifts up while nothing has reported in yet. */
+const CREEP_MS = 1900;
 
 type Phase = "loading" | "exiting" | "done";
 
@@ -57,11 +70,14 @@ export default function Preloader() {
       typeof window.matchMedia === "function" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const minVisible = reduced ? 0 : MIN_VISIBLE_MS;
+    const hold = reduced ? 0 : HOLD_MS;
 
     const start = performance.now();
     let raf = 0;
     let hardStop = 0;
     let value = 0;
+    let last = start;
+    let settledAt = 0;
     let finished = false;
 
     let assetsReady = document.readyState === "complete";
@@ -103,20 +119,33 @@ export default function Preloader() {
 
     const tick = (now: number) => {
       const elapsed = now - start;
+      const dt = Math.min(now - last, 100); // ignore a backgrounded tab
+      last = now;
 
       /* Approaches 88% and never arrives — only a real signal completes
          the bar. */
-      const creep = 88 * (1 - Math.exp(-elapsed / 1400));
+      const creep = 88 * (1 - Math.exp(-elapsed / CREEP_MS));
       const target =
         assetsReady && fontsReady ? 100 : Math.max(creep, fontsReady ? 64 : 0);
 
-      value += (target - value) * 0.11;
-      if (target - value < 0.35) value = target;
+      /* Exponential glide, integrated over the real frame time. A
+         visitor who asked for reduced motion gets the figure itself,
+         with no glide to sit through. */
+      value = reduced
+        ? target
+        : value + (target - value) * (1 - Math.exp(-dt / GLIDE_MS));
+      /* Close the last half percent outright: the readout already rounds
+         to 100 there and the ring is a sub-pixel short, so the tail of
+         the exponential is dead time the visitor waits through. */
+      if (target - value < 0.5) value = target;
       paint(value);
 
       if (value >= 99.95 && elapsed >= minVisible) {
-        finish();
-        return;
+        if (!settledAt) settledAt = now;
+        if (now - settledAt >= hold) {
+          finish();
+          return;
+        }
       }
       raf = requestAnimationFrame(tick);
     };

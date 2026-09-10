@@ -178,7 +178,15 @@
 
 .pl {
   --p: 0;
-  transition: transform 1s var(--ease-brand);
+
+  /* The site's --ease-brand leaves fast and settles slowly, which is
+     right for small elements arriving but abrupt for a full-screen
+     panel departing. The curtain gets an ease that is gentle at both
+     ends instead — balanced, so it neither snaps away nor hangs and
+     then bolts. */
+  --ease-curtain: cubic-bezier(0.65, 0, 0.35, 1);
+
+  transition: transform 1.2s var(--ease-curtain);
   will-change: transform;
 }
 
@@ -195,16 +203,31 @@
     radial-gradient(120% 100% at 50% 50%, transparent 38%, rgba(0, 0, 0, 0.5));
 }
 
-/* The lockup leaves a beat ahead of the curtain, so the exit reads as
-   one movement rather than a panel sliding off with cargo on it. */
+/* The lockup settles in on first paint, then leaves a beat ahead of the
+   curtain so the exit reads as one movement rather than a panel sliding
+   off with cargo on it.
+
+   `backwards` rather than `both`: the animation must not hold its end
+   state, or it would outrank the exit transition below. */
 .pl-body {
+  animation: pl-enter 1s var(--ease-brand) backwards;
+  /* --ease-curtain, not --ease-brand: the latter is front-loaded enough
+     that the lockup would be gone before the curtain had visibly moved,
+     leaving a beat of bare green. */
   transition:
-    opacity 0.5s var(--ease-brand),
-    transform 0.5s var(--ease-brand);
+    opacity 0.75s var(--ease-curtain),
+    transform 0.75s var(--ease-curtain);
 }
 .pl[data-phase="exiting"] .pl-body {
   opacity: 0;
-  transform: translate3d(0, -18px, 0);
+  transform: translate3d(0, -26px, 0);
+}
+
+@keyframes pl-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
 }
 
 /* Breathing glow behind the badge — the only thing that moves while the
@@ -214,12 +237,12 @@
   inset: -16%;
   border-radius: 999px;
   background: radial-gradient(circle, rgba(156, 191, 95, 0.32), transparent 68%);
-  animation: pl-breathe 3.4s ease-in-out infinite;
+  animation: pl-breathe 4.6s ease-in-out infinite;
 }
 
 @keyframes pl-breathe {
-  0%, 100% { opacity: 0.5; transform: scale(0.94); }
-  50%      { opacity: 1;   transform: scale(1.06); }
+  0%, 100% { opacity: 0.55; transform: scale(0.96); }
+  50%      { opacity: 1;    transform: scale(1.05); }
 }
 
 /* Progress ring. pathLength="100" turns the dash maths into percentages. */
@@ -275,7 +298,8 @@
 
   .anim-kenburns,
   .anim-drift,
-  .pl-halo {
+  .pl-halo,
+  .pl-body {
     animation: none !important;
   }
 

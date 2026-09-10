@@ -129,10 +129,20 @@ writes a single `--p` custom property (0-100) straight to the DOM — the ring,
 the bar and the readout all derive from that one number, and React re-renders
 only when the phase changes, not sixty times a second.
 
-It shows for at least 1.15s (0s if the visitor asks for reduced motion) and at
-most 5s, so a slow connection can never hold the site hostage. Then the curtain
-leaves upward on the brand wave — the same shape that separates every section
-below it.
+The glide toward the real figure is integrated over the actual frame time
+(`GLIDE_MS`), not applied as a per-frame fraction — a per-frame factor silently
+runs at double speed on a 120Hz panel, so the same preloader would be paced
+differently on different monitors.
+
+It shows for at least 1.5s and at most 5.5s, holds a beat on the completed
+ring, then leaves upward on the brand wave — the same shape that separates
+every section below it — over 1.2s on an ease that is gentle at both ends
+(`--ease-curtain`, not the site's `--ease-brand`, which is front-loaded and
+reads as abrupt on a full-screen panel). About 3.3s end to end; the timings are
+the constants at the top of the file.
+
+A visitor who asks for reduced motion gets none of it: no minimum, no hold, no
+glide — the figure itself, and the curtain straight out of the way.
 
 ⚠️ The curtain and the scroll-reveals are coupled through `src/lib/appReady.ts`.
 Reveals do **not** start observing until the curtain lifts, otherwise every
