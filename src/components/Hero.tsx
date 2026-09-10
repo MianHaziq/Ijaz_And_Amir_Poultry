@@ -61,10 +61,25 @@ export default function Hero() {
       id="home"
       className="relative isolate w-full overflow-hidden bg-deep"
     >
-      {/* ---------- artwork ---------- */}
+      {/* ---------- artwork ----------
+          min-h is what keeps the copy legible, and it is doing two
+          separate jobs.
+
+          The frame is bottom-anchored so the painted green wave meets
+          the deep-green band below it, which means a short, wide window
+          eats the sky off the top - and the sky is what the copy reads
+          against. 47vw caps that crop at about a sixth of the image.
+
+          The 700px floor is for the other end: around 768-1200 the
+          landscape crop is only ~430-680px tall, so the copy would fill
+          the whole frame and spill onto the sheds. Below that the image
+          is scaled to the frame's height and cropped at the sides
+          instead, which costs some of the hen but keeps the type on
+          sky. The cost of both is that on a short window the hero runs
+          past the fold - the copy and both buttons stay above it. */}
       <div ref={parallaxRef} className="relative w-full will-change-transform">
         {/* desktop / landscape crop */}
-        <div className="relative hidden aspect-[1671/941] max-h-[min(1000px,94svh)] w-full overflow-hidden md:block">
+        <div className="relative hidden aspect-[1671/941] max-h-[min(1100px,94svh)] min-h-[max(47vw,min(700px,92svh))] w-full overflow-hidden md:block">
           <Image
             src="/banner1.png"
             alt={alt}
@@ -90,57 +105,17 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ---------- legibility scrim ----------
-          Deliberately narrow. It sits only under the copy and is masked
-          away before it reaches the green wave and the hen, so the
-          commissioned artwork keeps its full saturation. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 hidden md:block"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.78) 24%, rgba(255,255,255,0.3) 44%, rgba(255,255,255,0) 60%)",
-          maskImage:
-            "linear-gradient(to bottom, #000 0%, #000 66%, transparent 88%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, #000 0%, #000 66%, transparent 88%)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 md:hidden"
-        style={{
-          backgroundImage:
-            "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 22%, rgba(255,255,255,0.25) 42%, rgba(255,255,255,0) 56%)",
-        }}
-      />
-
-      {/* ---------- copy ---------- */}
-      <div className="absolute inset-0 flex items-start pt-24 md:items-center md:pt-0">
+      {/* ---------- copy ----------
+          Anchored to the top rather than centred. The artwork's own sky
+          is pale enough to set dark type over unaided - 8.6-10.7:1
+          across its upper-left - which is exactly where the client's
+          printed banner puts this text. Centred, the copy landed over
+          the fields at 2.9-5.2:1 and needed a wash to survive; up here
+          it needs nothing. Because the crop is bottom-anchored, the top
+          of the frame is always the lightest part of the image. */}
+      <div className="absolute inset-0 flex items-start pt-24 xl:pt-32">
         <div className="shell w-full">
           <div className="relative max-w-xl lg:max-w-2xl">
-            {/* Second wash, anchored to the copy rather than to the
-                viewport. The scrim above is a viewport-wide gradient
-                while this block is centred inside .shell, so past about
-                2000px the two drift apart and the copy slides out of the
-                protected zone entirely. This one travels with it.
-
-                No z-index: it is an absolutely positioned first sibling,
-                so the relative wrapper after it paints on top. */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -inset-x-[45%] -inset-y-[70%] hidden md:block"
-              style={{
-                /* `ellipse 50% 50% at 50% 50%` inscribes the ellipse in
-                   its box, so the wash is already at zero alpha when it
-                   meets the edges. Sized to the corner instead - the
-                   default - it still carries opacity there and draws a
-                   visible rectangle over the artwork. */
-                background:
-                  "radial-gradient(ellipse 50% 50% at 50% 50%, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.88) 44%, rgba(255,255,255,0.66) 68%, rgba(255,255,255,0.28) 85%, rgba(255,255,255,0) 100%)",
-              }}
-            />
-
             <div className="relative">
               <span
                 {...reveal(0)}
@@ -160,7 +135,7 @@ export default function Hero() {
 
               <h1
                 {...reveal(140)}
-                className="mt-5 font-display text-[2.1rem] leading-[1.03] font-extrabold text-deep sm:text-5xl lg:text-[4.1rem]"
+                className="hero-lift mt-5 font-display text-[2.1rem] leading-[1.03] font-extrabold text-deep sm:text-4xl xl:text-[4.1rem]"
               >
                 Healthy Birds.
                 <br />
@@ -184,7 +159,7 @@ export default function Hero() {
 
               <p
                 {...reveal(280)}
-                className="text-pretty mt-6 max-w-lg text-[0.95rem] leading-relaxed text-ink/85 sm:text-lg"
+                className="hero-lift text-pretty mt-6 max-w-lg text-[0.95rem] leading-relaxed text-ink/85 xl:text-lg"
               >
                 Modern poultry farming built on quality production, responsible
                 care, strong biosecurity, and sustainable growth.

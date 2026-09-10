@@ -62,28 +62,48 @@ appears once the visitor scrolls past the hero.
 
 ## Hero legibility
 
-The hero sets dark type over a bright photograph, so contrast is a design
-constraint there, not an afterthought. Two things it is worth knowing before
-touching that section:
+The hero sets dark type over a photograph, so contrast is a design constraint
+there. **There is no scrim and no panel behind the copy** - the artwork carries
+it, which is how the client's own printed banner does it.
 
-* **`--color-leaf` and `--color-green` cannot be used for text over the
-  artwork.** `#57a83c` reaches only **2.97:1 against pure white**, so no scrim
-  can rescue it — it failed at 1.92:1 in place. `--color-green-strong`
-  (`#0c5f2c`) exists for exactly this: dark enough to set headline type in over
-  the photograph, still clearly the brand green. The greens above it stay what
-  they are, surface and accent colours.
-* **There are two washes, and they are not redundant.** The first is a
-  viewport-wide gradient from the left edge. The second is anchored to the copy
-  block itself — necessary because the copy is centred inside `.shell`
-  (`max-width: 82rem`) while the first wash is measured against the viewport,
-  so past roughly 2000px they drift apart and the copy slides out of the
-  protected zone. With both in place the headline holds ~7.3:1 and the body
-  ~10:1 from 768px to 3440px, near enough flat.
+That works because of where the copy sits. Sampling banner1.png, the contrast
+of `--color-deep` against it looks like this:
 
-The copy wash is sized `ellipse 50% 50% at 50% 50%`, which inscribes it in its
-box so it is already at zero alpha where it meets the edges. Left at the
-default corner sizing it still carries opacity there and draws a visible
-rectangle across the artwork.
+```
+rows 17-42%, cols 0-50%   →  8.6 - 10.7:1     the sky
+rows 58-67%, cols 0-50%   →  2.9 -  5.2:1     the fields
+rows 83%+                 →  1.1:1            the green wave
+```
+
+So the copy is anchored to the **top** of the frame, over the sky, not centred.
+Centred it landed in the second band and needed a wash to survive; up top it
+needs nothing.
+
+Two constraints keep it there, both on the artwork frame's `min-h`:
+
+* **`47vw`** caps the crop. The frame is bottom-anchored so the painted wave
+  meets the deep-green band below it, which means a short, wide window eats the
+  sky off the top - the very thing the copy needs.
+* **`min(700px, 92svh)`** is for the opposite end. Around 768-1200 the landscape
+  crop is only ~430-680px tall, so the copy would fill the frame and spill onto
+  the sheds. Below that floor the image is scaled to the frame and cropped at
+  the sides instead, which costs some of the hen but keeps the type on sky. The
+  headline holds its display size only from `xl`, for the same reason.
+
+The cost of both is that on a short or very wide window the hero runs past the
+fold. The copy and both buttons stay above it.
+
+**`--color-leaf` and `--color-green` cannot be used for text over the artwork.**
+`#57a83c` reaches only **2.97:1 against pure white**, so no backdrop can rescue
+it - it failed at 1.92:1 in place. `--color-green-strong` (`#0c5f2c`) exists for
+this. The greens above it stay surface and accent colours.
+
+Measured with the copy hidden and the backdrop sampled, from 390px to 3440px:
+headline 8.6-11.1:1, second line 6.0-7.1:1, body 5.9-10.0:1.
+
+`.hero-lift` is only insurance - a wide, soft halo bound to the glyphs, for
+window shapes the rules above do not fully cover. It never draws an edge, which
+is the whole problem with a scrim.
 
 ---
 
