@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Inter, Caveat } from "next/font/google";
 import "./globals.css";
+import Preloader from "@/components/Preloader";
 import { site } from "@/lib/site";
 
 /* Display: confident, corporate, geometric - closest match to the weight
@@ -78,6 +79,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${display.variable} ${body.variable} ${script.variable} antialiased`}>
+        <noscript>
+          {/* Without scripting the curtain could never lift and the
+              scroll-reveals could never be released, so the page would
+              stay blank behind a green panel. Neutralise both. */}
+          <style
+            dangerouslySetInnerHTML={{
+              __html:
+                "#preloader{display:none!important}" +
+                "[data-reveal]{opacity:1!important;transform:none!important}",
+            }}
+          />
+        </noscript>
+
+        <Preloader />
+
         <a
           href="#about"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-deep focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-white"

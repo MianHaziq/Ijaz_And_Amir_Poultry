@@ -169,6 +169,98 @@
 .anim-drift    { animation: drift 14s ease-in-out infinite; }
 
 /* ============================================================
+   Preloader curtain
+
+   --p (0-100) is written straight to the root element by the rAF loop
+   in Preloader.tsx. The ring, the bar and the readout all derive from
+   that one number, so they can never drift apart.
+   ============================================================ */
+
+.pl {
+  --p: 0;
+  transition: transform 1s var(--ease-brand);
+  will-change: transform;
+}
+
+/* Past 100% so the wave hanging below the curtain clears the viewport. */
+.pl[data-phase="exiting"] {
+  transform: translate3d(0, -105%, 0);
+}
+
+/* A warm centre light over the deep green, closed off by a vignette, so
+   the lockup sits in the brightest part of the field. */
+.pl-field {
+  background:
+    radial-gradient(58% 44% at 50% 42%, rgba(87, 168, 60, 0.3), transparent 72%),
+    radial-gradient(120% 100% at 50% 50%, transparent 38%, rgba(0, 0, 0, 0.5));
+}
+
+/* The lockup leaves a beat ahead of the curtain, so the exit reads as
+   one movement rather than a panel sliding off with cargo on it. */
+.pl-body {
+  transition:
+    opacity 0.5s var(--ease-brand),
+    transform 0.5s var(--ease-brand);
+}
+.pl[data-phase="exiting"] .pl-body {
+  opacity: 0;
+  transform: translate3d(0, -18px, 0);
+}
+
+/* Breathing glow behind the badge — the only thing that moves while the
+   visitor waits, apart from the progress itself. */
+.pl-halo {
+  position: absolute;
+  inset: -16%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(156, 191, 95, 0.32), transparent 68%);
+  animation: pl-breathe 3.4s ease-in-out infinite;
+}
+
+@keyframes pl-breathe {
+  0%, 100% { opacity: 0.5; transform: scale(0.94); }
+  50%      { opacity: 1;   transform: scale(1.06); }
+}
+
+/* Progress ring. pathLength="100" turns the dash maths into percentages. */
+.pl-ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.13);
+  stroke-width: 2;
+}
+.pl-ring-value {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: calc(100 - var(--p));
+  filter: drop-shadow(0 0 6px rgba(201, 162, 39, 0.5));
+}
+
+/* Progress bar. scaleX keeps the fill on the compositor. */
+.pl-bar {
+  position: relative;
+  height: 2px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.pl-bar-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transform-origin: left center;
+  transform: scaleX(calc(var(--p) / 100));
+  background: linear-gradient(
+    90deg,
+    var(--color-gold),
+    var(--color-gold-soft) 55%,
+    var(--color-lime)
+  );
+}
+
+/* ============================================================
    Respect the user's motion preference — everything resolves
    instantly to its final state, nothing is lost.
    ============================================================ */
@@ -182,8 +274,15 @@
   }
 
   .anim-kenburns,
-  .anim-drift {
+  .anim-drift,
+  .pl-halo {
     animation: none !important;
+  }
+
+  /* The curtain still lifts, it just stops being a performance. */
+  .pl,
+  .pl-body {
+    transition: none !important;
   }
 
   *, *::before, *::after {
