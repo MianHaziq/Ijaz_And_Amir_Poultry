@@ -15,6 +15,8 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: site.name,
+  logo: "/logo.png",
+  image: ["/logo.png", "/banner1.png"],
   description:
     "Registered broiler poultry farm focused on quality production, responsible care, biosecurity and sustainable growth.",
   telephone: site.phones.map((p) => p.tel),
