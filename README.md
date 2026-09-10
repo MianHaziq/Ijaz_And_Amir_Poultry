@@ -47,9 +47,11 @@ between the leaves — are **transparent**, exactly as they are in the artwork, 
 Anything else would let the background flood the rooster's face.
 
 `src/app/icon.png` and `src/app/apple-icon.png` are cut from the same file by
-Next's icon file convention — there is no `favicon.ico`. All three, plus the
-`logo` in the page's `LocalBusiness` structured data, trace back to that one
-asset.
+Next's icon file convention — there is no `favicon.ico`. Both are flattened
+onto **opaque white**, for the same reason the plate exists: a transparent
+favicon would let a dark browser tab flood the rooster's face. All of them,
+plus the `logo` in the page's `LocalBusiness` structured data, trace back to
+that one asset.
 
 `Logo` sets the full lockup as the card does: mark, **IJAZ & AMIR**, spaced
 `POULTRY FARM`, the `HEALTHY BIRDS • BETTER TOMORROW` strap, and the green-to-gold
@@ -142,14 +144,17 @@ dies before reporting in, the page must release itself rather than stay blank.
 
 ---
 
-## Contact form
+## Contact
 
-There is **no mail service wired up**, so rather than fake a "message sent"
-confirmation, the form composes the enquiry and hands it to a channel the farm
-actually monitors: WhatsApp by default, `mailto:` as a fallback.
+**There is no enquiry form.** There is no mail service wired up for this build,
+and a form whose submit button only opens WhatsApp is a longer road to the same
+place — so `src/components/Contact.tsx` puts the farm's real channels in front
+of the visitor directly: the two phone numbers, WhatsApp, email, and the
+address with a map.
 
-To move to a real backend later, replace the `submit` handler in
-`src/components/Contact.tsx` — the markup does not need to change.
+It holds no state, so it is a server component. If a real mail backend is
+provisioned later, a form can be added back as a client child of this section
+without disturbing the rest of it.
 
 ---
 
