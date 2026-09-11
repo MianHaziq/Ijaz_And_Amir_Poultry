@@ -99,11 +99,16 @@ it - it failed at 1.92:1 in place. `--color-green-strong` (`#0c5f2c`) exists for
 this. The greens above it stay surface and accent colours.
 
 Measured with the copy hidden and the backdrop sampled, from 390px to 3440px:
-headline 8.6-11.1:1, second line 6.0-7.1:1, body 5.9-10.0:1.
+headline 8.6-11.1:1, second line 6.0-7.1:1, body 6.7-11.3:1.
 
-`.hero-lift` is only insurance - a wide, soft halo bound to the glyphs, for
-window shapes the rules above do not fully cover. It never draws an edge, which
-is the whole problem with a scrim.
+**Nothing is painted behind the type and nothing glows around it.** A soft
+white halo was tried here as insurance for awkward window shapes; at body size
+it reads as a smudge on the glyph edges and makes the copy look dirty rather
+than lifted. The placement rules above carry it instead.
+
+For the same reason the body copy is solid `--color-deep`, not a translucent
+near-grey. `text-ink/85` composites against a warm, saturated photograph into
+mud - a colour that belongs to neither the type nor the picture.
 
 ---
 

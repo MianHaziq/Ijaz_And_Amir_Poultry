@@ -175,23 +175,6 @@
 .anim-drift    { animation: drift 14s ease-in-out infinite; }
 
 /* ============================================================
-   Hero copy
-
-   The artwork carries the contrast on its own where the copy sits, so
-   there is no panel behind it. This is only insurance: on a short, wide
-   viewport `object-cover` crops the pale sky away and the copy can end
-   up over the fields. A wide, soft halo bound to the glyphs lifts them
-   off whatever lands behind without ever drawing an edge - which is the
-   whole problem with a scrim.
-   ============================================================ */
-
-.hero-lift {
-  text-shadow:
-    0 0 22px rgba(255, 255, 255, 0.55),
-    0 0 60px rgba(255, 255, 255, 0.4);
-}
-
-/* ============================================================
    Preloader curtain
 
    --p (0-100) is written straight to the root element by the rAF loop

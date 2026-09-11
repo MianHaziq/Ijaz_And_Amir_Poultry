@@ -135,7 +135,7 @@ export default function Hero() {
 
               <h1
                 {...reveal(140)}
-                className="hero-lift mt-5 font-display text-[2.1rem] leading-[1.03] font-extrabold text-deep sm:text-4xl xl:text-[4.1rem]"
+                className="mt-5 font-display text-[2.1rem] leading-[1.03] font-extrabold text-deep sm:text-4xl xl:text-[4.1rem]"
               >
                 Healthy Birds.
                 <br />
@@ -159,7 +159,7 @@ export default function Hero() {
 
               <p
                 {...reveal(280)}
-                className="hero-lift text-pretty mt-6 max-w-lg text-[0.95rem] leading-relaxed text-ink/85 xl:text-lg"
+                className="text-pretty mt-6 max-w-lg text-[0.95rem] leading-relaxed font-medium text-deep xl:text-lg"
               >
                 Modern poultry farming built on quality production, responsible
                 care, strong biosecurity, and sustainable growth.
