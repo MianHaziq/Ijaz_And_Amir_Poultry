@@ -116,6 +116,13 @@ export default function Hero() {
       <div className="absolute inset-0 flex items-start pt-24 xl:pt-32">
         <div className="shell w-full">
           <div className="relative max-w-xl lg:max-w-2xl">
+            {/* Anchored to the copy, not the viewport: the copy is centred
+                inside .shell while the frame is not, so a veil measured
+                against the viewport drifts off the words on wide screens.
+                Absolutely positioned and first, so the relative wrapper
+                after it paints on top without needing a z-index. */}
+            <div className="hero-veil" aria-hidden="true" />
+
             <div className="relative">
               <span
                 {...reveal(0)}

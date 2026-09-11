@@ -63,11 +63,9 @@ appears once the visitor scrolls past the hero.
 ## Hero legibility
 
 The hero sets dark type over a photograph, so contrast is a design constraint
-there. **There is no scrim and no panel behind the copy** - the artwork carries
-it, which is how the client's own printed banner does it.
+there. Two things carry it, and they do different jobs.
 
-That works because of where the copy sits. Sampling banner1.png, the contrast
-of `--color-deep` against it looks like this:
+**Placement.** Sampling banner1.png, the contrast of `--color-deep` against it:
 
 ```
 rows 17-42%, cols 0-50%   →  8.6 - 10.7:1     the sky
@@ -75,40 +73,46 @@ rows 58-67%, cols 0-50%   →  2.9 -  5.2:1     the fields
 rows 83%+                 →  1.1:1            the green wave
 ```
 
-So the copy is anchored to the **top** of the frame, over the sky, not centred.
-Centred it landed in the second band and needed a wash to survive; up top it
-needs nothing.
+So the copy is anchored to the **top** of the frame, over the sky - which is
+where the client's own printed banner puts it. Centred, it landed in the second
+band. Two constraints on the artwork frame's `min-h` keep it there: `47vw` caps
+how much sky a short, wide window can crop off the top (the frame is
+bottom-anchored so the painted wave meets the deep-green band below it), and
+`min(700px, 92svh)` stops the ~430-680px-tall landscape crop around 768-1200
+from being filled by the copy and spilling onto the sheds. Below that floor the
+image is scaled to the frame and cropped at the sides instead - some of the hen
+for type on sky. The headline holds its display size only from `xl` for the
+same reason. Both mean the hero can run past the fold on a short window; the
+copy and buttons stay above it.
 
-Two constraints keep it there, both on the artwork frame's `min-h`:
+**Presence.** Legible is not the same as prominent. The sunrise, the clouds and
+the hen are all bright and highly detailed and compete with the type, so
+`.hero-veil` sits behind the copy - a soft pool of light, anchored to the copy
+block so it travels with it on wide screens. Most of its work is done by
+**defocus**, not paint: a 9px `backdrop-filter` blur settles the busy detail
+while the picture stays perfectly readable through it, and the white is only
+50% - thin enough that the field, the sheds and the sun still show. A flat
+panel at 90% would have hidden the artwork; that was tried and rejected.
 
-* **`47vw`** caps the crop. The frame is bottom-anchored so the painted wave
-  meets the deep-green band below it, which means a short, wide window eats the
-  sky off the top - the very thing the copy needs.
-* **`min(700px, 92svh)`** is for the opposite end. Around 768-1200 the landscape
-  crop is only ~430-680px tall, so the copy would fill the frame and spill onto
-  the sheds. Below that floor the image is scaled to the frame and cropped at
-  the sides instead, which costs some of the hen but keeps the type on sky. The
-  headline holds its display size only from `xl`, for the same reason.
+The falloff lives entirely in the mask, so the blur and the tint can never
+disagree and leave an edge. It is sized `ellipse 50% 50% at 50% 50%`, which
+inscribes it in its own box so it has already reached zero where the box ends -
+left at the default corner sizing it still carries opacity at the edges and
+draws a rectangle across the artwork. Prefixed `-webkit-backdrop-filter` is
+written *before* the unprefixed one: the minifier keeps the later of two
+hand-written declarations, and in the other order Chrome silently got no blur.
 
-The cost of both is that on a short or very wide window the hero runs past the
-fold. The copy and both buttons stay above it.
+No glow on the glyphs. A soft white halo was tried as insurance; at body size
+it reads as a smudge on the letter edges. And the body copy is solid
+`--color-deep`, not a translucent grey - `text-ink/85` composites against a
+warm photograph into mud.
 
 **`--color-leaf` and `--color-green` cannot be used for text over the artwork.**
 `#57a83c` reaches only **2.97:1 against pure white**, so no backdrop can rescue
-it - it failed at 1.92:1 in place. `--color-green-strong` (`#0c5f2c`) exists for
-this. The greens above it stay surface and accent colours.
+it. `--color-green-strong` (`#0c5f2c`) exists for this.
 
-Measured with the copy hidden and the backdrop sampled, from 390px to 3440px:
-headline 8.6-11.1:1, second line 6.0-7.1:1, body 6.7-11.3:1.
-
-**Nothing is painted behind the type and nothing glows around it.** A soft
-white halo was tried here as insurance for awkward window shapes; at body size
-it reads as a smudge on the glyph edges and makes the copy look dirty rather
-than lifted. The placement rules above carry it instead.
-
-For the same reason the body copy is solid `--color-deep`, not a translucent
-near-grey. `text-ink/85` composites against a warm, saturated photograph into
-mud - a colour that belongs to neither the type nor the picture.
+Measured with the copy hidden and the backdrop sampled, 390px to 3440px:
+headline 10.1-11.6:1, second line 6.9-7.5:1, body 9.1-11.8:1.
 
 ---
 

@@ -175,6 +175,66 @@
 .anim-drift    { animation: drift 14s ease-in-out infinite; }
 
 /* ============================================================
+   Hero veil
+
+   A soft pool of light behind the hero copy. The type already has the
+   contrast it needs where it sits; what it lacks is somewhere for the
+   eye to settle, because the sunrise, the clouds and the hen are all
+   bright and highly detailed and compete with it.
+
+   So most of the work is done by *defocus*, not by paint. A small blur
+   removes the busy detail behind the type while leaving the picture
+   perfectly readable through it; the white is only thin enough to lift
+   the luminance a little. A flat panel at 90% white would have hidden
+   the artwork - this sits at 50% and you can still see the field, the
+   sheds and the sun through it.
+
+   The falloff lives entirely in the mask, in one place, so the veil,
+   the blur and the tint can never disagree and leave an edge. Sized
+   `ellipse 50% 50% at 50% 50%` it is inscribed in its own box, so it
+   has already reached zero where the box ends - sized to the corner,
+   the default, it still carries opacity at the edges and draws a
+   rectangle across the artwork.
+   ============================================================ */
+
+.hero-veil {
+  position: absolute;
+  pointer-events: none;
+
+  /* Biased left so it reads as light falling across the frame rather
+     than a shape parked behind the words. */
+  top: -58%;
+  right: -26%;
+  bottom: -58%;
+  left: -54%;
+
+  background: rgba(255, 255, 255, 0.5);
+  /* Prefixed first, unprefixed last. The minifier keeps the later of
+     two hand-written declarations for the same property, and in the
+     other order it shipped only the -webkit- form - which Chrome does
+     not apply, so the blur silently vanished. */
+  -webkit-backdrop-filter: blur(9px) saturate(0.94);
+  backdrop-filter: blur(9px) saturate(0.94);
+
+  -webkit-mask-image: radial-gradient(
+    ellipse 50% 50% at 50% 50%,
+    #000 0%,
+    #000 40%,
+    rgba(0, 0, 0, 0.62) 62%,
+    rgba(0, 0, 0, 0.22) 82%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 50% 50% at 50% 50%,
+    #000 0%,
+    #000 40%,
+    rgba(0, 0, 0, 0.62) 62%,
+    rgba(0, 0, 0, 0.22) 82%,
+    transparent 100%
+  );
+}
+
+/* ============================================================
    Preloader curtain
 
    --p (0-100) is written straight to the root element by the rAF loop
