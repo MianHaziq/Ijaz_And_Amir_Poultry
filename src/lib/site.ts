@@ -37,9 +37,11 @@ export const site = {
     validUntil: "31 December 2026",
   },
 
+  /* Hash entries are sections of the home page; a leading "/" marks a
+     real route. The header resolves them per page - see Header.tsx. */
   nav: [
     { label: "Home", href: "#home" },
-    { label: "About Us", href: "#about" },
+    { label: "About Us", href: "/about" },
     { label: "Our Farm", href: "#farm" },
     { label: "Our Practices", href: "#practices" },
     { label: "Sustainability", href: "#sustainability" },

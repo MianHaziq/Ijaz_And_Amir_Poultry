@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import Reveal from "./Reveal";
 import { site } from "@/lib/site";
 
@@ -85,6 +86,21 @@ export default function About() {
                 </Reveal>
               ))}
             </ul>
+
+            <Reveal direction="up" delay={620}>
+              <Link
+                href="/about"
+                className="group mt-10 inline-flex items-center gap-2.5 text-sm font-semibold text-deep transition-colors duration-300 hover:text-green"
+              >
+                Meet {site.proprietor}, the proprietor
+                <span
+                  aria-hidden="true"
+                  className="transition-transform duration-500 group-hover:translate-x-1"
+                >
+                  &rarr;
+                </span>
+              </Link>
+            </Reveal>
           </div>
 
           {/* ---------------- image composition ---------------- */}
