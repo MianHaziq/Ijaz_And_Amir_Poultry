@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Inter, Caveat } from "next/font/google";
 import "./globals.css";
 import Preloader from "@/components/Preloader";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { site } from "@/lib/site";
 
 /* Display: confident, corporate, geometric - closest match to the weight
@@ -100,7 +102,9 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

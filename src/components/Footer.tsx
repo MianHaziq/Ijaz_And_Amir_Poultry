@@ -40,7 +40,7 @@ export default function Footer() {
               {site.nav.map((item) => (
                 <li key={item.href}>
                   <a
-                    href={item.href}
+                    href={item.href.startsWith("#") ? `/${item.href}` : item.href}
                     className="group inline-flex items-center gap-2 text-sm text-white/65 transition-colors duration-400 hover:text-white"
                   >
                     <span className="h-px w-0 bg-gold transition-all duration-500 group-hover:w-4" />

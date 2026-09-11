@@ -1,4 +1,3 @@
-import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import TrustStrip from "@/components/TrustStrip";
 import About from "@/components/About";
@@ -7,7 +6,6 @@ import CoreValues from "@/components/CoreValues";
 import QualityBiosecurity from "@/components/QualityBiosecurity";
 import Sustainability from "@/components/Sustainability";
 import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
 import { site } from "@/lib/site";
 
 /* Structured data - helps the farm surface properly in local search. */
@@ -40,8 +38,6 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Header />
-
       <main>
         <Hero />
         <TrustStrip />
@@ -52,8 +48,6 @@ export default function Home() {
         <Sustainability />
         <Contact />
       </main>
-
-      <Footer />
     </>
   );
 }

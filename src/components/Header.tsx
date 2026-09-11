@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 import { PhoneIcon } from "./Icons";
 import { site } from "@/lib/site";
@@ -10,6 +11,13 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("#home");
 
+  /* Most nav entries are sections of the home page. Away from home a bare
+     "#about" points at nothing, so it has to be rewritten as "/#about". */
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+  const href = (target: string) =>
+    target.startsWith("#") && !onHome ? `/${target}` : target;
+
   /* Transparent over the hero, solid white once the user scrolls past it. */
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -18,9 +26,13 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* Highlight the section currently in view. */
+  /* Highlight the section currently in view. Home only: the other pages
+     have no sections to observe, and route entries are matched by path. */
   useEffect(() => {
-    const ids = site.nav.map((n) => n.href.slice(1));
+    if (!onHome) return;
+    const ids = site.nav
+      .filter((n) => n.href.startsWith("#"))
+      .map((n) => n.href.slice(1));
     const sections = ids
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => Boolean(el));
@@ -38,7 +50,7 @@ export default function Header() {
 
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
-  }, []);
+  }, [onHome]);
 
   /* Lock body scroll while the mobile sheet is open. */
   useEffect(() => {
@@ -48,7 +60,7 @@ export default function Header() {
     };
   }, [open]);
 
-  const solid = scrolled || open;
+  const solid = scrolled || open || !onHome;
 
   return (
     <header
@@ -62,7 +74,7 @@ export default function Header() {
     >
       <div className="shell flex items-center justify-between gap-6">
         <a
-          href="#home"
+          href={onHome ? "#home" : "/"}
           aria-label={`${site.name} — home`}
           className="transition-transform duration-500 hover:scale-[1.02]"
         >
@@ -81,11 +93,13 @@ export default function Header() {
         {/* ---- desktop nav ---- */}
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           {site.nav.slice(0, -1).map((item) => {
-            const isActive = active === item.href;
+            const isActive = item.href.startsWith("#")
+              ? onHome && active === item.href
+              : pathname === item.href;
             return (
               <a
                 key={item.href}
-                href={item.href}
+                href={href(item.href)}
                 aria-current={isActive ? "true" : undefined}
                 className={[
                   "group relative rounded-full px-4 py-2 text-[0.82rem] font-semibold tracking-wide transition-colors duration-500",
@@ -111,7 +125,7 @@ export default function Header() {
           })}
 
           <a
-            href="#contact"
+            href={href("#contact")}
             className={[
               "ml-3 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[0.82rem] font-semibold",
               "transition-all duration-500 hover:-translate-y-0.5",
@@ -163,7 +177,7 @@ export default function Header() {
           {site.nav.map((item, i) => (
             <a
               key={item.href}
-              href={item.href}
+              href={href(item.href)}
               onClick={() => setOpen(false)}
               style={{ transitionDelay: open ? `${120 + i * 55}ms` : "0ms" }}
               className={[
